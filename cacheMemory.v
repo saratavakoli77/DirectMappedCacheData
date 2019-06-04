@@ -6,34 +6,70 @@
 `define TAG_SIZE 3
 
 
-module cacheMemory (input clk, input[14 : 0] address, input read, input[`WORD_COUNT * `WORD_SIZE-1 : 0] dataIn, output reg [`WORD_SIZE-1 : 0] dataOut, output reg hit);
-	reg [`BLOCK_COUNT-1 : 0] cache [0 : `BLOCK_SIZE -1];
-	reg [`WORD_COUNT*`WORD_SIZE + 4 : 0] buffer; //
-	reg [1 : 0] offset;
-	reg [9 : 0] index;
-	reg [2 : 0] tag;
+module cacheMemory (
+	input clk,
+	input rst,
+	input read,
+	input[14 : 0] address,
+	input[`WORD_COUNT * `WORD_SIZE-1 : 0] dataIn, 
+	output [`WORD_SIZE-1 : 0] dataOut,
+	output hit,
+	output ready,
+	output reg memWrite
+	output reg memRead);
 
-	always@(posedge clk) begin
-		index = address[11 : 2];
-		tag = address[14 : 12];
-		offset = address[1 : 0];
-		if(read)begin
-			if(cache[index][0] && cache[index][3 : 1] == tag) begin
-				hit = 1'b1;
-			end
-			else begin
-				hit = 1'b0;
-				dataOut <= 32'b0;
+	reg [`BLOCK_COUNT-1 : 0] cache [0 : `BLOCK_SIZE-1];
+	reg [`BLOCK_SIZE-1 : 0] buffer; // 4*32 bit data0, data1, data2, data3 + 3 bit tag and 1 bit valid = 132
+	reg [12 : 0] hitCount = 0;
+	reg [14 : 0] oldAddress;
+	reg [31 : 0] hitData;
+
+	wire [1 : 0] offset;
+	wire [9 : 0] index;
+	wire [2 : 0] tag;
+
+	integer i;
+
+	assign offset = address[1 : 0];
+	assign index = address[11 : 2];
+	assign tag = address[14 : 12];
+
+	always@(posedge clk, posedge rst) begin
+
+		if(rst)begin
+			hitCount <= 13'b0;
+			for(i = 0; i < 1024; i = i + 1)begin
+				cache[index][0] <= 1'b0;
 			end
 		end
-		else if(read == 0) begin
-			hit = 1'b1;
-			buffer[0] = 1'b1; //valid = 1
-			buffer[4 : 2] = tag;
-			buffer[`WORD_COUNT*`WORD_SIZE + 4 : 5] = dataIn;
-			cache[index] = buffer;
-			dataOut = cache[index][`BLOCK_SIZE-1 : `OFFSET_SIZE + `TAG_SIZE - 1];
+		else begin
+			oldAddress <= address;
+			if(read) begin
+				if(hit) begin
+					hitCount <= (oldAddress != address) ? hitCount + 1 : hitCount;
+					case(index)
+						0: hitData <= cache[index][35 : 4];
+						1: hitData <= cache[index][67 : 36];
+						2: hitData <= cache[index][99 : 68];
+						3: hitData <= cache[index][131 : 100];
+					endcase
+				end
+				else if(~hit) begin
+					memRead <= 1'b1;
+					cache[index] <= {dataIn, tag, 1'b1}; 
+				end
+			end
+			// else if(read == 0) begin
+			// 	hit = 1'b1;
+			// 	buffer[0] = 1'b1; //valid = 1
+			// 	buffer[4 : 2] = tag;
+			// 	buffer[`WORD_COUNT*`WORD_SIZE + 4 : 5] = dataIn;
+			// 	cache[index] = buffer;
+			// 	dataOut = cache[index][`BLOCK_SIZE-1 : `OFFSET_SIZE + `TAG_SIZE - 1];
+			// end
 		end
-
 	end
+	assign hit = (cache[index][3 : 1] == tag) ? 1'b1 : 1'b0;
+	assign dataOut = (hit) ? hitData : 32'bZ;
+	assign ready = (hit) ? 1'b1 : 1'b0;
 endmodule
