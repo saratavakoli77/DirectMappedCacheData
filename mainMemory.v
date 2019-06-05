@@ -4,11 +4,17 @@ module main_memory(input clk, rst, input read_enable, input [14:0] address, outp
     reg [14:0] initialize_address;
     integer i;
     integer q;
+    integer j;
 
     always@(posedge clk, posedge rst) begin
         initialize_address = {address[14:2],{2'b00}};
         q=31;
-        if (address >= 0 && address < 32767) begin
+        if(rst)begin
+            for(j = 1024; j < 8193; j=j+1) begin
+                m_memory[j] = 128'd1; 
+            end
+        end
+        else if (address >= 0 && address < 32767) begin
             for(i=0;i<4;i=i+1) begin
                 /*all_data_out[q- : 32*i] = m_memory[initialize_address];
                 // $display("%b\n",all_data_out[q-:32]);
