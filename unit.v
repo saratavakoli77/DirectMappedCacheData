@@ -40,8 +40,7 @@ module unit(
 	.hit_count(hitCount),
 	.cache_read(cacheRead),
 	.cache_write(cacheWrite), 
-	.address(address),
-	.hit_rate(hitRate)
+	.address(address)
 	);
 
 	main_memory m_memory(
