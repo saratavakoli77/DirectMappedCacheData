@@ -16,10 +16,6 @@ module main_memory(input clk, rst, input read_enable, input [14:0] address, outp
         end
         else if (address >= 0 && address < 32767) begin
             for(i=0;i<4;i=i+1) begin
-                /*all_data_out[q- : 32*i] = m_memory[initialize_address];
-                // $display("%b\n",all_data_out[q-:32]);
-                q = q+32;        
-                initialize_address = initialize_address+1;*/
                 if (i == 0) begin
                 	all_data_out[31 : 0] = m_memory[initialize_address];
                 end
@@ -35,7 +31,6 @@ module main_memory(input clk, rst, input read_enable, input [14:0] address, outp
                 q = q+32;        
                 initialize_address = initialize_address+1;
             end
-            // $display("\n");
         end
     end
     assign data_out = (read_enable && address >= 0 && address < 32768) ? m_memory[address] : 32'bZ;

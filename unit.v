@@ -1,9 +1,5 @@
-`define BLOCK_SIZE 132 //4 * 32 bit word + 3 bit tag + 1 bit valid = 
-`define BLOCK_COUNT 1024 // total of 1024 blocks which makes a cache of 4K, 32 bit words
 `define WORD_SIZE 32
 `define WORD_COUNT 4
-`define OFFSET_SIZE 2
-`define TAG_SIZE 3
 
 module unit(
 	input clk,

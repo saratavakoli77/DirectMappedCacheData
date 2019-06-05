@@ -57,14 +57,12 @@ module cacheMemory (
 				cache[i] <= 132'd0;
 				validVlues[i] <= 1'b1;
 			end
-			$display("reseeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeet");
 		end
 		else begin
 
 			oldAddress <= address;
 			if(read) begin
 				if(hit) begin
-					$display("hiiiiiiiiiiiiiiiiiiiiiiiiiiit");
 					hitNum <= (oldAddress != address) ? hitNum + 1 : hitNum;
 					case(offset_)
 						0: hitData <= cache[index_][35 : 4];
@@ -74,26 +72,14 @@ module cacheMemory (
 					endcase
 				end
 				else if(~hit) begin
-					$display("miiiiiiiiiiiiiiiiiiiiiiiiiiss");
 					memRead <= 1'b1;
 					cache[index_] <= {dataIn, tag, 1'b1}; 
 				end
 			end
-			// else if(read == 0) begin
-			//hit = 1'b1;
-			// 	buffer[0] = 1'b1; //valid = 1
-			// 	buffer[4 : 2] = tag;
-			// 	buffer[`WORD_COUNT*`WORD_SIZE + 4 : 5] = dataIn;
-			// 	cache[index] = buffer;
-			// 	dataOut = cache[index][`BLOCK_SIZE-1 : `OFFSET_SIZE + `TAG_SIZE - 1];
-			// end
 		end
 	end
 	assign hit = (cache[index_][0] == 1'b1 && cache[index_][3 : 1] == tag) ? 1'b1 : 1'b0;
 	assign dataOut = (hit) ? hitData : 32'bZ;
 	assign ready = (hit) ? 1'b1 : 1'b0;
 	assign hitCount = hitNum;
-	assign chacheTag = cache[index_][3 : 1];
-	assign cacheValid = cache[index_][0];
-	assign cacheIndex = cache[index_];
 endmodule
