@@ -41,12 +41,11 @@ module cacheMemory (
 	integer tag_;
 	integer offset_;
 	integer index_;
-	always @(tag)
+	always @(tag, index, offset) begin
     	tag_ = tag;
-	always @(index)
     	index_ = index;
-    always@(offset)
     	offset_ = offset;
+    end
 
 	always@(posedge clk, posedge rst) begin
 
