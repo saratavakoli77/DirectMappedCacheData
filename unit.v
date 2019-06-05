@@ -40,7 +40,7 @@ module unit(
 	.hit_rate(hitRate)
 	);
 
-	main_memory(
+	main_memory main_memory(
 	.clk(clk), 
 	.rst(rst),
 	.read_enable(memRead),
