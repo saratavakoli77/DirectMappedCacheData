@@ -38,6 +38,6 @@ module main_memory(input clk, rst, input read_enable, input [14:0] address, outp
             // $display("\n");
         end
     end
-    assign data_out = (read_enable && address >= 0 && address < 32768) ? m_memory[address] : 32'b0;
+    assign data_out = (read_enable && address >= 0 && address < 32768) ? m_memory[address] : 32'bZ;
 endmodule
 
