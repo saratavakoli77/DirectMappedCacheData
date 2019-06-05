@@ -16,7 +16,9 @@ module cacheMemory (
 	output hit,
 	output ready,
 	output reg memRead,
-	output [13 : 0] hitCount
+	output [13 : 0] hitCount,
+	output [2 : 0] chacheTag,
+	output cacheValid
 	);
 
 	reg [`BLOCK_COUNT-1 : 0] cache [0 : `BLOCK_SIZE-1];
@@ -39,6 +41,7 @@ module cacheMemory (
 
 		if(rst)begin
 			hitNum <= 13'b0;
+			memRead <= 1'b0;
 			for(i = 0; i < 1024; i = i + 1)begin
 				cache[index][0] <= 1'b0;
 			end
@@ -70,8 +73,10 @@ module cacheMemory (
 			// end
 		end
 	end
-	assign hit = (cache[index][3 : 1] == tag) ? 1'b1 : 1'b0;
+	assign hit = (cache[index][0] == 1'b1 && cache[index][3 : 1] == tag) ? 1'b1 : 1'b0;
 	assign dataOut = (hit) ? hitData : 32'bZ;
 	assign ready = (hit) ? 1'b1 : 1'b0;
 	assign hitCount = hitNum;
+	assign chacheTag = cache[index][3 : 1];
+	assign cacheValid = cache[index][0];
 endmodule
