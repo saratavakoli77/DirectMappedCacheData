@@ -6,13 +6,12 @@ module unit(
 	input rst
 	);
 	
-	wire cacheRead, chacheReady, hit, ready, memRead, cacheWrite, currentCacheValid;
+	wire cacheRead, chacheReady, hit, ready, memRead, cacheWrite;
 	wire [14 : 0] address;
 	wire [`WORD_COUNT * `WORD_SIZE-1 : 0] cacheDataIn;
 	wire [`WORD_SIZE-1 : 0] cacheDataOut, memoryDataOut;
 	wire [13 : 0] hitCount;
 	wire [6 : 0] hitRate;
-	wire [2 : 0] currentCacheIndex;
 
 	cacheMemory cacheMemory(
 	.clk(clk),
@@ -24,9 +23,7 @@ module unit(
 	.hit(hit),
 	.ready(cacheReady),
 	.memRead(memRead),
-	.hitCount(hitCount),
-	.chacheTag(currentCacheIndex),
-	.cacheValid(currentCacheValid)
+	.hitCount(hitCount)
 	);
 
 	cacheController cache_controller( 

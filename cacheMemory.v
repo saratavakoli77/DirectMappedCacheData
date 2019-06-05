@@ -16,9 +16,7 @@ module cacheMemory (
 	output hit,
 	output ready,
 	output reg memRead,
-	output [13 : 0] hitCount,
-	output [2 : 0] chacheTag,
-	output cacheValid
+	output [13 : 0] hitCount
 	);
 
 	reg [`BLOCK_SIZE-1 : 0] cache [0 : `BLOCK_COUNT-1];
