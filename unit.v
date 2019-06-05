@@ -36,7 +36,7 @@ module unit(
 	cacheController cache_controller( 
 	.clk(clk),
 	.rst(rst),
-	.cache_ready(chacheReady), 
+	.cache_ready(cacheReady), 
 	.hit_count(hitCount),
 	.cache_read(cacheRead),
 	.cache_write(cacheWrite), 
@@ -44,11 +44,7 @@ module unit(
 	.hit_rate(hitRate)
 	);
 
-<<<<<<< HEAD
-	main_memory main_memory(
-=======
 	main_memory m_memory(
->>>>>>> f1af687162b3ee59908248e76a16937b159bfb04
 	.clk(clk), 
 	.rst(rst),
 	.read_enable(memRead),
