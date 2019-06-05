@@ -14,6 +14,8 @@ module unit(
 	wire [14 : 0] address;
 	wire [`WORD_COUNT * `WORD_SIZE-1 : 0] cacheDataIn;
 	wire [`WORD_SIZE-1 : 0] cacheDataOut, memoryDataOut;
+	wire [13 : 0] hitCount;
+	wire [6 : 0] hitRate;
 
 	cacheMemory cacheMemory(
 	.clk(clk),
@@ -24,7 +26,8 @@ module unit(
 	.dataOut(cacheDataOut),
 	.hit(hit),
 	.ready(cacheReady),
-	.memRead(memRead)
+	.memRead(memRead),
+	.hitCount(hitCount)
 	);
 
 	cpu cpu( 
@@ -33,7 +36,8 @@ module unit(
 	.cache_ready(chacheReady), 
 	.cache_read(cacheRead),
 	.cache_write(cacheWrite), 
-	.address(address)
+	.address(address),
+	.hit_rate(hitRate)
 	);
 
 	main_memory(

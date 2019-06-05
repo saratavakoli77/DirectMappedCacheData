@@ -15,12 +15,13 @@ module cacheMemory (
 	output [`WORD_SIZE-1 : 0] dataOut,
 	output hit,
 	output ready,
-	output reg memRead
+	output reg memRead,
+	output [13 : 0] hitCount
 	);
 
 	reg [`BLOCK_COUNT-1 : 0] cache [0 : `BLOCK_SIZE-1];
 	reg [`BLOCK_SIZE-1 : 0] buffer; // 4*32 bit data0, data1, data2, data3 + 3 bit tag and 1 bit valid = 132
-	reg [12 : 0] hitCount = 0;
+	reg [13 : 0] hitNum = 0;
 	reg [14 : 0] oldAddress;
 	reg [31 : 0] hitData;
 
@@ -37,7 +38,7 @@ module cacheMemory (
 	always@(posedge clk, posedge rst) begin
 
 		if(rst)begin
-			hitCount <= 13'b0;
+			hitNum <= 13'b0;
 			for(i = 0; i < 1024; i = i + 1)begin
 				cache[index][0] <= 1'b0;
 			end
@@ -46,7 +47,7 @@ module cacheMemory (
 			oldAddress <= address;
 			if(read) begin
 				if(hit) begin
-					hitCount <= (oldAddress != address) ? hitCount + 1 : hitCount;
+					hitNum <= (oldAddress != address) ? hitNum + 1 : hitNum;
 					case(index)
 						0: hitData <= cache[index][35 : 4];
 						1: hitData <= cache[index][67 : 36];
@@ -72,4 +73,5 @@ module cacheMemory (
 	assign hit = (cache[index][3 : 1] == tag) ? 1'b1 : 1'b0;
 	assign dataOut = (hit) ? hitData : 32'bZ;
 	assign ready = (hit) ? 1'b1 : 1'b0;
+	assign hitCount = hitNum;
 endmodule
