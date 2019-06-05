@@ -1,5 +1,5 @@
 module main_memory(input clk, rst, input read_enable, input [14:0] address, output reg [127:0] all_data_out, output [31:0] data_out);
-    reg [127:0] m_memory [0:32767];
+    reg [31:0] m_memory [0:32767];
 
     reg [14:0] initialize_address;
     integer i;
@@ -11,7 +11,7 @@ module main_memory(input clk, rst, input read_enable, input [14:0] address, outp
         q=31;
         if(rst)begin
             for(j = 1024; j < 8193; j=j+1) begin
-                m_memory[j] = 128'd1; 
+                m_memory[j] = 32'd1; 
             end
         end
         else if (address >= 0 && address < 32767) begin
