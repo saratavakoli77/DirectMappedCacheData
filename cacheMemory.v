@@ -15,8 +15,8 @@ module cacheMemory (
 	output [`WORD_SIZE-1 : 0] dataOut,
 	output hit,
 	output ready,
-	output reg memWrite
-	output reg memRead);
+	output reg memRead
+	);
 
 	reg [`BLOCK_COUNT-1 : 0] cache [0 : `BLOCK_SIZE-1];
 	reg [`BLOCK_SIZE-1 : 0] buffer; // 4*32 bit data0, data1, data2, data3 + 3 bit tag and 1 bit valid = 132
