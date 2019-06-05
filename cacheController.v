@@ -1,4 +1,4 @@
-module cpu ( input clk, rst, cache_ready, input [13 : 0] hit_count, output reg cache_read, cache_write, output reg [14:0] address, output reg [6 : 0] hit_rate);
+module cacheController ( input clk, rst, cache_ready, input [13 : 0] hit_count, output reg cache_read, cache_write, output reg [14:0] address, output reg [6 : 0] hit_rate);
 	reg [13:0] successful_access;
 	always@(posedge clk, posedge rst) begin
 		if (rst) begin
